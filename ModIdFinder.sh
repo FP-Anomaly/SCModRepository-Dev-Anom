@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Part of the UniversalUpload workflow, by Aristeas.
+# Don't touch this unless stuff breaks, everything's automatic.
+
+IFS=','; arrIN=($1); unset IFS;
 find . -type f -name "*.sbmi" >> ./allModDatas.txt
 
 MODIDARR=()
@@ -11,7 +15,14 @@ while read path; do
           modId=${tmp%<*}
           modPathTmp=${path%/*}
           modPath=${modPathTmp// /\`}
-          MODIDARR+=(\{\"value\":$modId,\"path\":\"$modPath\"\})
+		  
+		  for editedFile in "${arrIN[@]}"
+		  do
+			if [[ "./$editedFile" == "$modPathTmp"* ]] ; then
+				MODIDARR+=(\{\"value\":$modId,\"path\":\"$modPath\"\})
+				break
+			fi
+		  done
       fi
   done < "$path"
 done < allModDatas.txt
@@ -23,3 +34,5 @@ for item in "${MODIDARR[@]}"; do
   delim=","
 done
 echo "matrix={\"include\":[$joined]}]"
+
+echo > allModDatas.txt

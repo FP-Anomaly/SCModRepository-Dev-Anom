@@ -396,6 +396,9 @@ namespace ShipPoints
                 // Initialize the text_api with the HUDRegistered callback
                 TextHudApi = new HudAPIv2(HudRegistered);
 
+            // Avoid bootlock when opening world with autotracked grids.
+            TrackingManager.Init();
+
             // Initialize the WC_api and load it if it's not null
 
             WcApi = new WcApi();
